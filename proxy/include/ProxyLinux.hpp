@@ -17,6 +17,7 @@ public:
     Proxy(const Proxy& copy) = delete;
     Proxy(Proxy&& move) = delete;
 
+    int create();
     void start();
 
 };
