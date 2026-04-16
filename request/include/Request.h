@@ -1,9 +1,14 @@
+struct Request
+{
+    char *method;
+    char *host;
+    char *user_agent;
+    char *accept;
+    char *connection;
+    char *others;
 
-
-
-
-
-
+    char *content;
+};
 
 
 

@@ -1,3 +1,3 @@
-add_library(Request STATIC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+add_library(Request STATIC ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 target_include_directories(Request STATIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
