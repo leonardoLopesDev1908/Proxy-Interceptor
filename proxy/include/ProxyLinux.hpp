@@ -1,3 +1,4 @@
+#pragma once
 #include <cstring>
 #include <iostream>
 #include <netdb.h>
@@ -17,6 +18,7 @@ public:
     Proxy(const Proxy& copy) = delete;
     Proxy(Proxy&& move) = delete;
 
+    int create();
     void start();
 
 };

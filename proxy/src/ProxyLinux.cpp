@@ -1,13 +1,33 @@
 #include "ProxyLinux.hpp"
 
 ProxyLinux::ProxyLinux(const std::string_view& host, int port)
-    : m_host(host), m_port(port) {}
+    : m_host(host), m_port(port) 
+{
+    create();
+}
 
+
+int ProxyLinux::create()
+{
+    m_socket = socket(AF_INET, SOCK_STREAM, 0);    
+
+    if(m_socket != 0)
+    {
+        printf("[Error] socket\n");
+        return 1;
+    }
+
+    return 0;
+}
 
 void ProxyLinux::start()
 {
-    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-
+    if(create() == 1)
+    {
+        //throw error
+        return;
+    }
+    
     struct addrinfo hints, *result = nullptr;
     memset(&hints, 0, sizeof(hints));
 
@@ -31,21 +51,12 @@ void ProxyLinux::start()
 
     listen(serverSocket, 5);
 
-    int clientSocket = accept(serverSocket, nullptr, nullptr);
+    int clientSocket = accept(serverSocket, result->ai_addr, (int)result->ai_addrlen);
 
     char buffer[1024] = { 0 };
     std::string response;
-    
-    while(buffer != "0"){
-        recv(clientSocket, buffer, sizeof(buffer), 0);
-        std::cout << "Message from client: " << buffer
-            << std::endl;
-        std::cout << "Response: ";
-        std::getline(std::cin, response);
-        send(clientSocket, response.data(), response.size(), 0);
-    }
 
-    close(serverSocket);
-    m_socket = socket(AF_INET, SOCK_STREAM, 0);
+    ConnectionHandler newConn(clientSocket); 
 
+    //Como criar o connectionHandler? Dar clientSocket pra ele apenas? Dar addrinfo?
 }
