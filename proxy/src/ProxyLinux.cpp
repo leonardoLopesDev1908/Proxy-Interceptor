@@ -1,7 +1,10 @@
 #include "ProxyLinux.hpp"
 
 ProxyLinux::ProxyLinux(const std::string_view& host, int port)
-    : m_host(host), m_port(port) {}
+    : m_host(host), m_port(port) 
+{
+    create();
+}
 
 
 int ProxyLinux::create()
