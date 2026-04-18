@@ -17,7 +17,6 @@ int ProxyLinux::create()
     return 0;
 }
 
-
 void ProxyLinux::start()
 {
     if(create() == 1)

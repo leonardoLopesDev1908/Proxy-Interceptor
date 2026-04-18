@@ -1,4 +1,5 @@
 #include "ProxyWindows.h"
+#include "ConnectionHandler.h"
 
 Proxy::Proxy(std::string_view& host, int port)
 	: m_host(host), m_port(port) {}
@@ -21,6 +22,7 @@ void Proxy::start()
 	if (create() != 0)
 	{
 		//throw std::err...
+		return;
 	}
 
 	struct addrinfo* result = nullptr;
@@ -37,6 +39,7 @@ void Proxy::start()
 	if (getaddrinfo(m_host, m_port, &hints, &result) != 0)
 	{
 		std::cout << "[Error] getaddrinfo\n";
+		WSACleanup();
 		return;
 	}
 
@@ -47,7 +50,38 @@ void Proxy::start()
 	{
 		std::cout << "[Error] invalid socket\n";
 		freeaddrinfo(&result);
+		WSACleanup();
 		return;
 	}
+
+	if (bind(m_socket, result->ai_addr, (int)result->ai_addrlen) == SOCKET_ERROR)
+	{
+		std::cout << "[Error] binding socket\n";
+		freeaddrinfo(&result);
+		closesocket(m_socket);
+		WSACleanup();
+		return;
+	}
+
+	freeaddrinfo(&result);
+
+	if (listen(m_socket, 5) == SOCKET_ERROR)
+	{
+		std::cout << "[Error] listening socket\n";
+		closesocket(m_socket);
+		WSACleanup();
+		return;
+	}
+
+	SOCKET client;
+	if ((client = accept(client, NULL, NULL)) == INVALID_SOCKET)
+	{
+		std::cout << "[Error] accepting\n";
+		closesocket(m_socket);
+		WSACleanup();
+		return;
+	}
+	
+	ConnectionHandler newConn(client);
 
 }
