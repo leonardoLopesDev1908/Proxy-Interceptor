@@ -1,7 +1,10 @@
 #include "ProxyWindows.h"
 
 Proxy::Proxy(std::string_view& host, int port)
-	: m_host(host), m_port(port) {}
+	: m_host(host), m_port(port) 
+{
+    create();
+}
 
 int Proxy::create()
 {
