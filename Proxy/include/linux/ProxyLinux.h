@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PROXY_LINUX_H
+#define PROXY_LINUX_H
 #include <cstring>
 #include <iostream>
 #include <netdb.h>
@@ -22,3 +23,5 @@ public:
     void start();
 
 };
+
+#endif

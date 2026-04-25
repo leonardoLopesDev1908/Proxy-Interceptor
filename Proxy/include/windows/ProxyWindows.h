@@ -1,3 +1,6 @@
+#ifndef PROXY_WINDOWS_H
+#define PROXY_WINDOWS_H
+
 #include <iostream>
 #include <WinSock2.h>
 #include <Windows.h>
@@ -18,3 +21,5 @@ public:
 	int create();
 	void start();
 };
+
+#endif

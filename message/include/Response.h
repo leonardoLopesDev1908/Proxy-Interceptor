@@ -1,21 +1,21 @@
-#pragma once
+#ifndef RESPONSE_H
+#define RESPONSE_H
+#include "common_imports.h"
 
-struct ResponseHeaders
+struct Response
 {
-    short status;
-    char *connection;
-    char *ctn_type;
-    char *date;
-    char *set_cookie;
+    int status_code;
+    std::string status_text;
+    std::string version;
 
-    char *content;
+    std::unordered_map<std::string, std::string> headers;
+
+    std::string body;
 };
-
-
 
 //Http response example
 /*
-200 OK
+200 OK Http/1.1
 Access-Control-Allow-Origin: *
 Connection: Keep-Alive
 Content-Encoding: gzip
@@ -33,4 +33,5 @@ X-Cache-Info: not cacheable; meta data too large
 X-kuma-revision: 1085259
 x-frame-options: DENY
 */
+#endif
 

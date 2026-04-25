@@ -1,19 +1,17 @@
-#pragma once
+#ifndef REQUEST_H
+#define REQUEST_H
+#include "common_imports.h"
 
 struct Request
 {
-    char *method;
-    char *host;
-    char *user_agent;
-    char *accept;
-    char *connection;
-    char *others;
+    std::string method;
+    std::string path;
+    std::string version;
 
-    char *content;
+    std::unordered_map<std::string, std::string> headers;
+
+    std::string body;
 };
-
-
-
 
 //Http request example
 /*
@@ -30,4 +28,4 @@ If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
 If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
 Cache-Control: max-age=0
 */
-
+#endif
