@@ -13,4 +13,4 @@ add_library(Proxy STATIC ${SOURCES})
 
 target_include_directories(Proxy PUBLIC ${PROXY_INCLUDE_DIR})
 
-target_link_directories(Proxy PRIVATE Request)
+target_link_directories(Proxy PRIVATE Message)

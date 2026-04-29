@@ -1,8 +1,8 @@
-#include "App.h"
+#include "ProxyApp.h"
 
 int main()
 {
-	App app;
+	ProxyApp app;
 	app.start();
 
 	return 0;

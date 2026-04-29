@@ -1,8 +1,8 @@
-#include "App.h"
+#include "ProxyApp.h"
 
 using namespace ftxui;
 
-ftxui::Element App::manual_page()
+ftxui::Element ProxyApp::manual_page()
 {
     return
         vbox({
@@ -33,31 +33,26 @@ ftxui::Element App::manual_page()
             }) | center | flex;
 }
 
-ftxui::Element App::input_endpoint_page()
+ftxui::Element ProxyApp::input_endpoint_page()
 {
-    inputHost |= CatchEvent([&](Event event) {
-        return event.is_character() && std::isdigit(event.character()[0]);
-        });
+      return vbox({
+        text("Endpoint Configuration") | bold,
+        separator(),
+        hbox({
+            text("Host: "),
+            inputHost->Render()
+        }),
 
-    inputPort |= CatchEvent([&](Event event) {
-        return event.is_character() && std::isdigit(event.character()[0]);
-    });
-
-    auto container = Container::Vertical({
-        inputHost,
-        inputPort
-        });
-
-    return vbox({
-        window(text(" Configuracao de Rede "), vbox({
-            hbox(text(" Host: "), inputHost->Render()),
-            hbox(text(" Port: "), inputPort->Render()),
-        })),
-        text("Pressione Enter para conectar...") | color(Color::GrayDark)
-    });
+        hbox({
+            text("Port: "),
+            inputPort->Render()
+        }),
+        separator(),
+        text("Esc to comeback to menu") | color(Color::GrayLight) | italic,
+    }) | border;
 }
 
-ftxui::Element App::messages_menu_page()
+ftxui::Element ProxyApp::messages_menu_page()
 {
     auto table = Table({
         {"Version", "Marketing name", "Release date", "API level", "Runtime"},
@@ -100,14 +95,13 @@ ftxui::Element App::messages_menu_page()
     return text("\nWill be a page here soon\n");
 }
 
-ftxui::Element App::options_page()
+ftxui::Element ProxyApp::options_page()
 {
     return text("\nOptions page\n");
 }
 
-void App::start() {
+void ProxyApp::start() {
 
-    Page current_page = Page::Manual;
     auto screen = ftxui::ScreenInteractive::Fullscreen();
     auto header =
         hbox({
@@ -116,34 +110,75 @@ void App::start() {
             text(" @github: leonardoLopesDev1908 ")
             }) | border;
 
+    //Menu 
     std::vector<std::string> pages = {
         "[1] Manual;", "[2] Enter/Change endpoint;", "[3] Messages menu;",
         "[4] Options;","[5] Exit;"
     };
-    int selected = 0;
-    auto menu = Menu({
+    menu = Menu({
          &pages,
          &selected,
     });
 
-    auto renderer = ftxui::Renderer(menu, [&] {
-        Element body;
+    //Endpoint input components
+    inputHost = Input(&endpointState.host, "Host");
+    inputPort = Input(&endpointState.port, "Port");
 
-        switch (current_page)
+    inputPort |= CatchEvent([&](Event event) {
+        return event.is_character() && !std::isdigit(event.character()[0]);
+    });
+
+    auto submitEndpoints = [&] {
+        if(endpointState.host.empty() 
+            || endpointState.port.empty())
         {
-        case Page::Manual:
+        }
+        #ifdef _WIN32
+            ProxyWindows proxy(endpointState.host, endpointState.port);
+        #elif __linux__
+            ProxyLinux proxy(endpointState.host, endpointState.port);
+        #endif
+        std::future<int> proxyLaunch = std::async(std::launch::async, [&proxy]{
+            return proxy.start();        
+        });
+    };
+    
+    //auto btnSubmit = Button("Launch proxy", submitEndpoint, ButtonOption::Animated());
+
+    input_container = Container::Vertical({
+        inputHost,
+        inputPort
+    //    btnSubmit
+    });
+
+    main_container = Container::Tab({
+        menu,
+        input_container       
+    }, &activeTab);
+
+    //Message selection
+    // messages_container = Menu({
+    //     &messages,
+    //     &messagesMenu.selectedMessage
+    // });
+
+    auto renderer = ftxui::Renderer(main_container, [&] {
+        Element body;
+        switch (activeTab)
+        {
+        case 0:
             body = manual_page();
             break;
-        case Page::Endpoint:
+        case 1:
             body = input_endpoint_page();
             break;
-        case Page::Messages:
+        case 2:
             body = messages_menu_page();
             break;
-        case Page::Options:
+        case 3:
             body = options_page();
-            break;
-        case Page::Exit:
+            break;  
+        case 4:
             screen.ExitLoopClosure()();
             break;
         }
@@ -158,20 +193,30 @@ void App::start() {
     });
 
     auto app = CatchEvent(renderer, [&](Event event) {
+        if(event == Event::Escape && activeTab != 0)
+        {
+            activeTab = 0;
+            main_container->SetActiveChild(menu);
+            return true;
+        }
+
         if (event == Event::Return)
         {
-            switch (selected)
+            switch(selected)
             {
-            case 0: current_page = Page::Manual; break;
-            case 1: current_page = Page::Endpoint; break;
-            case 2: current_page = Page::Messages; break;
-            case 3: current_page = Page::Options; break;
-            case 4: current_page = Page::Exit; break;
+                case 1: 
+                    activeTab = 1;
+                    main_container->SetActiveChild(input_container);
+                    return true;
+                case 4:
+                    screen.ExitLoopClosure()();
+                    return true;
+                default:
+                    activeTab = selected;
+                    return true; 
             }
-            return true;
         }
         return false;
     });
-
     screen.Loop(app);
 }
