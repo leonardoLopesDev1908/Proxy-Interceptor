@@ -1,6 +1,6 @@
-#include "ProxyLinux.hpp"
+#include "ProxyLinux.h"
 
-ProxyLinux::ProxyLinux(const std::string_view& host, int port)
+ProxyLinux::ProxyLinux(std::string host, std::string port)
     : m_host(host), m_port(port) 
 {
     create();
@@ -20,12 +20,12 @@ int ProxyLinux::create()
     return 0;
 }
 
-void ProxyLinux::start()
+int ProxyLinux::start()
 {
     if(create() == 1)
     {
         //throw error
-        return;
+        return 1;
     }
     
     struct addrinfo hints, *result = nullptr;
@@ -35,28 +35,29 @@ void ProxyLinux::start()
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
 
-    if(getaddrinfo(m_host, m_port, &hints, &result)
+    if(getaddrinfo(m_host.c_str(), m_port.c_str(), &hints, &result)
             != 0){
         std::cout << "Erro no getaddrinfo" << std::endl;
-        close(serverSocket);
+        close(m_socket);
         return 1;
     }
 
-    if(bind(serverSocket, result->ai_addr,
+    if(bind(m_socket, result->ai_addr,
             (int) result->ai_addrlen)){
         std::cout << "Erro no bind" << std::endl;
-        close(serverSocket);
+        close(m_socket);
         return 1;
     }
 
-    listen(serverSocket, 5);
+    listen(m_socket, 5);
 
-    int clientSocket = accept(serverSocket, result->ai_addr, (int)result->ai_addrlen);
+    int clientSocket = accept(m_socket, result->ai_addr, &result->ai_addrlen);
 
     char buffer[1024] = { 0 };
     std::string response;
 
-    ConnectionHandler newConn(clientSocket); 
+    //ConnectionHandler newConn(clientSocket); 
 
     //Como criar o connectionHandler? Dar clientSocket pra ele apenas? Dar addrinfo?
+    return 0;
 }

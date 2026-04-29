@@ -7,21 +7,20 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-class Proxy
+class ProxyLinux
 {
     int m_socket;
-    std::string_view& m_host;
-    int m_port;
+    std::string m_host;
+    std::string m_port;
 
 public:
     
-    Proxy(std::string_view& host, int port);    
-    Proxy(const Proxy& copy) = delete;
-    Proxy(Proxy&& move) = delete;
+    ProxyLinux(std::string host, std::string port);    
+    ProxyLinux(const ProxyLinux& copy) = delete;
+    ProxyLinux(ProxyLinux&& move) = delete;
 
     int create();
-    void start();
+    int start();
 
 };
-
 #endif
