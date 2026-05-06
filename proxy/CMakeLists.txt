@@ -11,6 +11,10 @@ endif()
 
 add_library(Proxy STATIC ${SOURCES})
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(Proxy PRIVATE ws2_32)
+endif()
+
 target_include_directories(Proxy PUBLIC ${PROXY_INCLUDE_DIR})
 
 target_link_directories(Proxy PRIVATE Message)

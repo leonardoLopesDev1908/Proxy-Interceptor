@@ -4,38 +4,114 @@ using namespace ftxui;
 
 ftxui::Element ProxyApp::manual_page()
 {
-    return
-        vbox({
-            filler(),
-            paragraph(R"(
-            This program intends to be a simple way to check and edit HTTP messages, whether 
-            its a request or a response. The idea to build this project came to me when i 
-            started to study network programming in C++ and i saw how cool were some of BurpSuit 
-            features.So i decided to make one on my own (maybe this part wasnt as cool as i thought).
+    switch (optionsState.selectedLanguage)
+    {
+        case 1:
+        {
+            return
+                vbox({
+                    filler(),
+                    paragraph(R"(
+            Este programa pretende ser uma forma simples de verificar e editar mensagens HTTP, 
+            seja uma requisicao ou uma resposta. A ideia de construir este projeto surgiu quando
+            comecei a estudar programacao de rede em C++ e vi como alguns recursos do BurpSuite 
+            eram legais. Entao, decidi fazer um por conta propria (talvez esta parte nao tenha 
+            sido tao legal quanto eu pensava).
+                
+            Para ser mais direto, o fluxo funciona da seguinte forma:
+                - Apos pressionar "1", uma janela de entrada sera aberta esperando que voce insira
+                um endpoint (host + porta) onde este programa ficara ouvindo as mensagens. 
+                Exemplo de entrada:
 
-            To be more straightforward, the flow is as follows :
-                - After press "1" a input window will open waiting for you to enter a
-                  endpoint(host + port) where this program will be listen for messages.
-                  Example of input :
-                        - host: 127.0.0.1
-                        - port : 3000
-                - Then, you will see a window where you can check a queue of all the messages that will
-                  be arriving.You decide which message more attracts you(or if you are already looking
-                  for some specific one, just wait for it) and what to do with it : change the method,
-                  change content, and so on.
-                - After chose a message, do all the operations you want to, you can just forward
-                  the message to the server and, if you intend to, wait for the respective response.
-                - If you are just watching for the messages and dont want to edit nothing(keep in
-                  mind that the process of editing delays the messages sending until you make the
-                  forwarding) you can disable the "Keep" flag, which means that the program will
-                  just take the messages, make a register of it and automatically forward.)") | center | flex,
-            filler(),
-            }) | center | flex;
+                    host: 127.0.0.1
+
+                    port: 3000
+            
+                - Em seguida, voce vera uma janela onde poderA verificar uma fila de todas as 
+                mensagens que chegarem. Voce decide qual mensagem mais lhe atrai (ou, se ja 
+                estiver procurando por uma especifica, basta esperar por ela) e o que fazer 
+                com ela: alterar o metodo, alterar o conteudo e assim por diante.
+
+                - Depois de escolher uma mensagem e realizar todas as operacoes desejadas, 
+                voce pode simplesmente encaminhar a mensagem para o servidor e, se pretender,
+                aguardar pela respectiva resposta.
+                - Se voce estiver apenas observando as mensagens e nao quiser editar nada 
+                (lembre-se que o processo de edicao atrasa o envio das mensagens ate que voce 
+                faca o encaminhamento), voce pode desativar a flag "Keep", o que significa que 
+                o programa apenas recebera as mensagens, fara um registro delas e as 
+                encaminhara automaticamente.)") | center | flex,
+                    filler(),
+                    }) | center | flex;
+        }
+        case 2: 
+        {
+            return
+                vbox({
+                    filler(),
+                    paragraph(R"(
+            Este programa pretende ser una forma sencilla de verificar y editar mensajes HTTP, 
+            ya sea una peticion o una respuesta. La idea de construir este proyecto se me ocurrio 
+            cuando empece a estudiar programacion de redes en C++ y vi lo geniales que eran algunas 
+            funciones de BurpSuite. Asi que decidi hacer uno por mi cuenta (tal vez esta parte no 
+            fue tan genial como pensaba).
+                
+            Para ser mas directo, el flujo es el siguiente:
+                - Despues de presionar "1", se abrira una ventana de entrada esperando que ingreses um endpoint 
+                (host + puerto) donde este programa estara escuchando mensajes. Ejemplo de entrada:
+
+                    host: 127.0.0.1
+
+                    port: 3000
+            
+                - Luego, veras una ventana donde podras consultar una cola de todos los mensajes que 
+                iran llegando. Tu decides que mensaje te atrae mas (o si ya estas buscando uno especifico, 
+                solo esperalo) y que hacer con el: cambiar el metodo, cambiar el contenido, etc.
+
+                - Despues de elegir un mensaje y realizar todas las operaciones que desees, puedes 
+                simplemente reenviar el mensaje al servidor y, si lo deseas, esperar la respuesta respectiva.
+                - Si solo estas observando los mensajes y no quieres editar nada (ten en cuenta que 
+                el proceso de edicion retrasa el envio de los mensajes hasta que realices el reenvio), puedes 
+                desactivar la bandera "Keep", lo que significa que el programa simplemente tomara los mensajes, 
+                hara un registro de ellos y los reenviara automaticamente.)") | center | flex,
+                    filler(),
+                    }) | center | flex;
+        }
+        default:
+        {
+            return
+                vbox({
+                    filler(),
+                    paragraph(R"(
+        This program intends to be a simple way to check and edit HTTP messages, whether 
+        its a request or a response. The idea to build this project came to me when i 
+        started to study network programming in C++ and i saw how cool were some of BurpSuit 
+        features.So i decided to make one on my own (maybe this part wasnt as cool as i thought).
+
+        To be more straightforward, the flow is as follows :
+            - After press "1" a input window will open waiting for you to enter a
+                endpoint(host + port) where this program will be listen for messages.
+                Example of input :
+                    - host: 127.0.0.1
+                    - port : 3000
+            - Then, you will see a window where you can check a queue of all the messages that will
+                be arriving.You decide which message more attracts you(or if you are already looking
+                for some specific one, just wait for it) and what to do with it : change the method,
+                change content, and so on.
+            - After chose a message, do all the operations you want to, you can just forward
+                the message to the server and, if you intend to, wait for the respective response.
+            - If you are just watching for the messages and dont want to edit nothing(keep in
+                mind that the process of editing delays the messages sending until you make the
+                forwarding) you can disable the "Keep" flag, which means that the program will
+                just take the messages, make a register of it and automatically forward.)") | center | flex,
+                    filler(),
+                    }) | center | flex;
+        }
+    }
 }
 
 ftxui::Element ProxyApp::input_endpoint_page()
 {
-      return vbox({
+    return vbox({
         text("Endpoint Configuration") | bold,
         separator(),
         hbox({
@@ -48,56 +124,27 @@ ftxui::Element ProxyApp::input_endpoint_page()
             inputPort->Render()
         }),
         separator(),
+        btnSubmit->Render(),
+        separator(),
         text("Esc to comeback to menu") | color(Color::GrayLight) | italic,
     }) | border;
 }
 
 ftxui::Element ProxyApp::messages_menu_page()
 {
-    auto table = Table({
-        {"Version", "Marketing name", "Release date", "API level", "Runtime"},
-        {"2.3", "Gingerbread", "February 9 2011", "10", "Dalvik 1.4.0"},
-        {"4.0", "Ice Cream Sandwich", "October 19 2011", "15", "Dalvik"},
-        {"4.1", "Jelly Bean", "July 9 2012", "16", "Dalvik"},
-        {"4.2", "Jelly Bean", "November 13 2012", "17", "Dalvik"},
-        {"4.3", "Jelly Bean", "July 24 2013", "18", "Dalvik"},
-        {"4.4", "KitKat", "October 31 2013", "19", "Dalvik and ART"},
-        {"5.0", "Lollipop", "November 3 2014", "21", "ART"},
-        {"5.1", "Lollipop", "March 9 2015", "22", "ART"},
-        {"6.0", "Marshmallow", "October 5 2015", "23", "ART"},
-        {"7.0", "Nougat", "August 22 2016", "24", "ART"},
-        {"7.1", "Nougat", "October 4 2016", "25", "ART"},
-        {"8.0", "Oreo", "August 21 2017", "26", "ART"},
-        {"8.1", "Oreo", "December 5 2017", "27", "ART"},
-        {"9", "Pie", "August 6 2018", "28", "ART"},
-        {"10", "10", "September 3 2019", "29", "ART"},
-        {"11", "11", "September 8 2020", "30", "ART"},
-        });
 
-    table.SelectAll().Border(LIGHT);
-
-    table.SelectColumn(0).Border(LIGHT);
-
-    table.SelectRow(0).Decorate(bold);
-    table.SelectRow(0).SeparatorVertical(LIGHT);
-    table.SelectRow(0).Border(DOUBLE);
-
-    table.SelectColumn(2).DecorateCells(align_right);
-
-    auto content = table.SelectRows(1, -1);
-    content.DecorateCellsAlternateRow(color(Color::Blue), 3, 0);
-    content.DecorateCellsAlternateRow(color(Color::Cyan), 3, 1);
-    content.DecorateCellsAlternateRow(color(Color::White), 3, 2);
-
-    table.SelectCell(3, 4).Border(LIGHT, color(Color::Red));
-    table.SelectCell(2, 7).Border(LIGHT, color(Color::Red));
-
-    return text("\nWill be a page here soon\n");
+    return text("\nEnter a endpoint at page 2.\n");
 }
 
 ftxui::Element ProxyApp::options_page()
 {
-    return text("\nOptions page\n");
+    std::string selected_name = optionsState.languages[optionsState.selectedLanguage];
+
+    return vbox({
+        separator(),
+        options_container->Render(),
+        separator(),
+    }) | border;
 }
 
 void ProxyApp::start() {
@@ -128,39 +175,50 @@ void ProxyApp::start() {
         return event.is_character() && !std::isdigit(event.character()[0]);
     });
 
-    auto submitEndpoints = [&] {
+    auto submitEndpoint = [&] {
         if(endpointState.host.empty() 
             || endpointState.port.empty())
         {
         }
         #ifdef _WIN32
-            ProxyWindows proxy(endpointState.host, endpointState.port);
+            m_proxy = std::make_shared<ProxyWindows>(endpointState.host, endpointState.port);
         #elif __linux__
-            ProxyLinux proxy(endpointState.host, endpointState.port);
+            m_proxy = std::make_shared<ProxyLinux>(endpointState.host, endpointState.port);
         #endif
-        std::future<int> proxyLaunch = std::async(std::launch::async, [&proxy]{
-            return proxy.start();        
+        proxyThread = std::thread([p = m_proxy] {
+            p->start();
         });
     };
     
-    //auto btnSubmit = Button("Launch proxy", submitEndpoint, ButtonOption::Animated());
+    btnSubmit = Button("Launch proxy", submitEndpoint, ButtonOption::Animated());
 
     input_container = Container::Vertical({
         inputHost,
-        inputPort
-    //    btnSubmit
+        inputPort,
+        btnSubmit
+    });
+
+    //Message selection
+    messages_container = Menu({
+        &messagesState.messages,
+        &messagesState.selectedMessage
+    });
+
+    //Options
+    auto radio = Radiobox(&optionsState.languages, &optionsState.selectedLanguage);
+    auto checkKeep = Checkbox("Enable keep messages", &optionsState.keepMessagesFlag);
+
+    options_container = Container::Vertical({ 
+        radio,
+        checkKeep
     });
 
     main_container = Container::Tab({
         menu,
-        input_container       
+        input_container,
+        messages_container,
+        options_container
     }, &activeTab);
-
-    //Message selection
-    // messages_container = Menu({
-    //     &messages,
-    //     &messagesMenu.selectedMessage
-    // });
 
     auto renderer = ftxui::Renderer(main_container, [&] {
         Element body;
@@ -200,13 +258,18 @@ void ProxyApp::start() {
             return true;
         }
 
-        if (event == Event::Return)
+        if (event == Event::Return && activeTab == 0)
         {
             switch(selected)
             {
                 case 1: 
                     activeTab = 1;
                     main_container->SetActiveChild(input_container);
+                    return true;
+                case 3:
+                    activeTab = 3;
+                    main_container->SetActiveChild(options_container);
+                    options_container->SetActiveChild(radio);
                     return true;
                 case 4:
                     screen.ExitLoopClosure()();

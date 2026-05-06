@@ -29,17 +29,24 @@ public:
     ftxui::Element options_page();
 
 private:
+    enum class Language {English, Portuguese, Spanish};
 
     struct MessagesMenuState
     {
         //std::queue<Message> messages;
+        std::vector<std::string> messages = {
+            "a",  "c", "acae", "ascnoa"
+        };
         int selectedMessage = 0;
     };
 
     struct OptionsState
     {
-        bool readOnlyFlag = true;
-        enum class Language {English, Portuguese, Spanish};
+        std::vector<std::string> languages = { 
+            "English", "Portuguese", "Spanish" 
+        };
+        int selectedLanguage = 0;
+        bool keepMessagesFlag = false;
     };
 
     struct InputEndpointState 
@@ -53,15 +60,26 @@ private:
     int activeTab = 0;
 
     InputEndpointState endpointState;
-    MessagesMenuState messagesMenu;
+    MessagesMenuState messagesState;
     OptionsState optionsState;
 
     ftxui::Component menu;
     ftxui::Component inputHost;
     ftxui::Component inputPort;
+    ftxui::Component btnSubmit;
 
     ftxui::Component main_container;
     ftxui::Component input_container;
     ftxui::Component menu_container;
     ftxui::Component messages_container;
+    ftxui::Component options_container;
+
+#ifdef _WIN32
+    std::shared_ptr<ProxyWindows> m_proxy;
+#elif __linux__
+    std::shared_ptr<ProxyLinux> m_proxy;
+#endif
+
+    bool proxyRunning = false;
+    std::thread proxyThread;
 };
